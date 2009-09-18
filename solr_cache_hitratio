@@ -1,0 +1,30 @@
+#! /usr/bin/env ruby
+
+require 'open-uri'
+require 'rexml/document'
+
+if ARGV.length > 0 && ARGV[0] == 'config'
+  puts <<CONFIG
+graph_category solr
+graph_title Cache Hit Ratio (in %)
+graph_args --upper-limit 100 -l 0
+graph_vlabel %
+query_cache.label query cache
+document_cache.label document cache
+filter_cache.label filter cache
+CONFIG
+  exit(0)
+end
+
+solr_stats_url = ENV['solr_stats_url'] || 'http://localhost:8080/solr/admin/stats.jsp'
+xpath = '//CACHE'
+
+solr_stats = open(solr_stats_url)
+doc = REXML::Document.new(solr_stats)
+
+cache = doc.elements[xpath]
+
+puts "query_cache.value #{cache.elements['entry[1]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
+puts "document_cache.value #{cache.elements['entry[2]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
+puts "filter_cache.value #{cache.elements['entry[3]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
+

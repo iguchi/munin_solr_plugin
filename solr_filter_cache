@@ -1,0 +1,33 @@
+#! /usr/bin/env ruby
+
+require 'open-uri'
+require 'rexml/document'
+
+if ARGV.length > 0 && ARGV[0] == 'config'
+  puts "graph_category solr"
+  puts "graph_title Filter Cache"
+  puts "graph_vlabel times / ${graph_period}"
+  puts "lookups.label lookups"
+  puts "lookups.type DERIVE"
+  puts "hits.label hits"
+  puts "hits.type DERIVE"
+  puts "inserts.label inserts"
+  puts "inserts.type DERIVE"
+  puts "evictions.label evictions"
+  puts "evictions.type DERIVE"
+  exit(0)
+end
+
+solr_stats_url = ENV['solr_stats_url'] || 'http://localhost:8080/solr/admin/stats.jsp'
+xpath = '//CACHE/entry[3]/stats'
+
+solr_stats = open(solr_stats_url)
+doc = REXML::Document.new(solr_stats)
+
+stats = doc.elements[xpath]
+
+puts "lookups.value #{stats.elements[8].text.slice(/\s*([0-9.]*)\s*/, 1)}"
+puts "hits.value #{stats.elements[9].text.slice(/\s*([0-9.]*)\s*/, 1)}"
+puts "inserts.value #{stats.elements[11].text.slice(/\s*([0-9.]*)\s*/, 1)}"
+puts "evictions.value #{stats.elements[12].text.slice(/\s*([0-9.]*)\s*/, 1)}"
+
