@@ -1,0 +1,30 @@
+#! /usr/bin/env ruby
+
+require 'open-uri'
+require 'rexml/document'
+
+solr_url = ENV['solr_url'] || 'http://localhost:8080/solr'
+solr_core = (ENV['solr_core'] || "").split(',')
+query_name = ENV['query_name'] || 'standerd'
+xpath = "//entry[normalize-space(name/text())='#{query_name}']"
+
+if ARGV.length > 0 && ARGV[0] == 'config'
+  puts <<CONFIG
+graph_category solr
+graph_title Requests per seconds
+graph_vlabel requests / second
+CONFIG
+  solr_core.each do |core|
+    puts "time_per_request_#{core.gsub(/-/, '_')}.label #{core}"
+  end
+  exit(0)
+end
+
+solr_core.each do |core|
+  solr_stats = open("#{solr_url}/#{core}/admin/stats.jsp")
+  doc = REXML::Document.new(solr_stats)
+
+  entry = doc.elements[xpath]
+
+  puts "time_per_request_#{core.gsub(/-/, '_')}.value #{entry.elements['stats/stat[6]'].text.gsub(/\s/, '')}"
+end
