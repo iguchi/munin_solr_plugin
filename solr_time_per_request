@@ -11,8 +11,9 @@ xpath = "//entry[normalize-space(name/text())='#{query_name}']"
 if ARGV.length > 0 && ARGV[0] == 'config'
   puts <<CONFIG
 graph_category solr
-graph_title Requests per seconds
-graph_vlabel requests / second
+graph_title Times per Request
+graph_vlabel msec / request
+graph_args --base 1000 -l 0 
 CONFIG
   solr_core.each do |core|
     puts "time_per_request_#{core.gsub(/-/, '_')}.label #{core}"

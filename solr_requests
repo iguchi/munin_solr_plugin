@@ -13,6 +13,7 @@ if ARGV.length > 0 && ARGV[0] == 'config'
 graph_category solr
 graph_title Requests per seconds
 graph_vlabel requests / second
+graph_args --base 1000 -l 0 
 CONFIG
   solr_core.each do |core|
     puts "requests_#{core.gsub(/-/, '_')}.label #{core}"
