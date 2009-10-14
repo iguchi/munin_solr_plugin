@@ -27,4 +27,3 @@ cache = doc.elements[xpath]
 puts "query_cache.value #{cache.elements['entry[1]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
 puts "document_cache.value #{cache.elements['entry[2]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
 puts "filter_cache.value #{cache.elements['entry[3]/stats/stat[3]'].text.slice(/\s*0.([0-9]*)\s*/, 1)}"
-

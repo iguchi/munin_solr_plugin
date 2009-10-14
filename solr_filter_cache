@@ -30,4 +30,3 @@ puts "lookups.value #{stats.elements[8].text.slice(/\s*([0-9.]*)\s*/, 1)}"
 puts "hits.value #{stats.elements[9].text.slice(/\s*([0-9.]*)\s*/, 1)}"
 puts "inserts.value #{stats.elements[11].text.slice(/\s*([0-9.]*)\s*/, 1)}"
 puts "evictions.value #{stats.elements[12].text.slice(/\s*([0-9.]*)\s*/, 1)}"
-

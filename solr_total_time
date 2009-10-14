@@ -11,19 +11,13 @@ xpath = "//entry[normalize-space(name/text())='#{query_name}']"
 if ARGV.length > 0 && ARGV[0] == 'config'
   puts <<CONFIG
 graph_category solr
-graph_title Time per request
-graph_vlabel msec / request
+graph_title Total Time per second
+graph_vlabel milisecond / second
 graph_args --base 1000 -l 0 
 CONFIG
   solr_core.each do |core|
-    puts "total_time_#{core.gsub(/-/, '_')}.label total_time_#{core}"
+    puts "total_time_#{core.gsub(/-/, '_')}.label #{core}"
     puts "total_time_#{core.gsub(/-/, '_')}.type DERIVE"
-    puts "total_time_#{core.gsub(/-/, '_')}.graph no"
-    puts "requests_#{core.gsub(/-/, '_')}.label requests_#{core}"
-    puts "requests_#{core.gsub(/-/, '_')}.type DERIVE"
-    puts "requests_#{core.gsub(/-/, '_')}.graph no"
-    puts "time_per_request_#{core.gsub(/-/, '_')}.label #{core}"
-    puts "time_per_request_#{core.gsub(/-/, '_')}.cdef total_time_#{core.gsub(/-/, '_')},requests_#{core.gsub(/-/, '_')},/"
   end
   exit(0)
 end
@@ -35,5 +29,4 @@ solr_core.each do |core|
   entry = doc.elements[xpath]
 
   puts "total_time_#{core.gsub(/-/, '_')}.value #{entry.elements['stats/stat[5]'].text.gsub(/\s/, '')}"
-  puts "requests_#{core.gsub(/-/, '_')}.value #{entry.elements['stats/stat[2]'].text.gsub(/\s/, '')}"
 end
